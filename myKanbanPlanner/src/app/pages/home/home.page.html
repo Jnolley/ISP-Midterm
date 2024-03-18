@@ -3,10 +3,10 @@
     <ion-title>
       My Kanban Planner
     </ion-title>
-  <ion-button (click)="presentAddTaskModal()">Add Task</ion-button>
+  <ion-button slot="end" (click)="presentAddTaskModal()">Add Task</ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  Board here
+  <app-board></app-board>
 </ion-content>

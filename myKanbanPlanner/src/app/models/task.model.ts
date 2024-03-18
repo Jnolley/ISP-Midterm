@@ -4,5 +4,4 @@ export interface Task {
   description: string;
   priority: 'low' | 'medium' | 'high';
   status: 'todo' | 'inProgress' | 'done' | 'backlog';
-  categoryId: number;
 }

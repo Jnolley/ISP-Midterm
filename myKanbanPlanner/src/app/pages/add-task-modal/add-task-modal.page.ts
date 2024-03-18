@@ -14,7 +14,6 @@ export class AddTaskModalPage {
     description: '',
     priority: 'low',
     status: 'todo',
-    categoryId: 1,
   };
 
   constructor(private modalCtrl: ModalController, private taskService: TaskService) {}
