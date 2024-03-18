@@ -16,5 +16,7 @@ export class TaskService {
     const newId = currentTasks.length > 0 ? Math.max(...currentTasks.map(t => t.id || 0)) + 1 : 1;
     const newTask: Task = { ...task, id: newId };
     this.tasksSubject.next([...currentTasks, newTask]);
+    console.log('Task added:', newTask);
+    console.log('All tasks:', this.tasksSubject.getValue());
   }
 }

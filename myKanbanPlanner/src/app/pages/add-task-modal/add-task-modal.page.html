@@ -22,7 +22,7 @@
 
       <ion-item>
         <ion-label>Priority</ion-label>
-        <ion-select [(ngModel)]="task.priority" name="priority" interface="popover">
+        <ion-select [(ngModel)]="task.priority" name="priority">
           <ion-select-option value="low">Low</ion-select-option>
           <ion-select-option value="medium">Medium</ion-select-option>
           <ion-select-option value="high">High</ion-select-option>
@@ -31,7 +31,7 @@
 
       <ion-item>
         <ion-label>Status</ion-label>
-        <ion-select [(ngModel)]="task.status" name="status" interface="popover">
+        <ion-select [(ngModel)]="task.status" name="status">
           <ion-select-option value="todo">To Do</ion-select-option>
           <ion-select-option value="inProgress">In Progress</ion-select-option>
           <ion-select-option value="done">Done</ion-select-option>
