@@ -8,6 +8,7 @@ import { Task } from '../models/task.model';
 export class TaskService {
   private tasksSubject = new BehaviorSubject<Task[]>([]);
   public tasks$ = this.tasksSubject.asObservable();
+  
 
   constructor() { }
 
@@ -19,4 +20,17 @@ export class TaskService {
     console.log('Task added:', newTask);
     console.log('All tasks:', this.tasksSubject.getValue());
   }
+
+  updateTaskStatus(taskId: number, newStatus: string): void {
+    const tasks = this.tasksSubject.getValue();
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
+
+    if (taskIndex !== -1) {
+      tasks[taskIndex].status = newStatus as Task['status'];
+      
+      this.tasksSubject.next(tasks);
+    }
+  }
+
+  
 }
