@@ -1,16 +1,20 @@
-<ion-grid [fixed]="true">
+<ion-grid fixed="true">
   <ion-row>
     <ion-col>
-      Column 1
+      <div class="header">Todo</div>
+      <app-task-card *ngFor="let task of tasksTodo" [task]="task"></app-task-card>
     </ion-col>
     <ion-col>
-      Column 2
+      <div class="header">In Progress</div>
+      <app-task-card *ngFor="let task of tasksInProgress" [task]="task"></app-task-card>
     </ion-col>
     <ion-col>
-      Column 3
+      <div class="header">Done</div>
+      <app-task-card *ngFor="let task of tasksDone" [task]="task"></app-task-card>
     </ion-col>
     <ion-col>
-      Column 4
+      <div class="header">Backlog</div>
+      <app-task-card *ngFor="let task of tasksBacklog" [task]="task"></app-task-card>
     </ion-col>
   </ion-row>
 </ion-grid>
