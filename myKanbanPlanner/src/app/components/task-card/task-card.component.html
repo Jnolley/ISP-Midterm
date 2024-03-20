@@ -6,7 +6,7 @@
     <p>{{task.description}}</p>
     <ion-item>
       <ion-label class="smaller-text">Status</ion-label>
-      <ion-select [(ngModel)]="task.status" (ionChange)="onStatusChange(task.status)" class="smaller-text" name="status"> 
+      <ion-select [(ngModel)]="task.status" (ionChange)="onStatusChange(task.status)" class="small" name="status"> 
         <ion-select-option value="backlog">Backlog</ion-select-option>
         <ion-select-option value="todo">To Do</ion-select-option>
         <ion-select-option value="inProgress">In Progress</ion-select-option>
