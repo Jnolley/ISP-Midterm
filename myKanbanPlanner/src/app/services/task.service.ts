@@ -5,6 +5,7 @@ import { Task } from '../models/task.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class TaskService {
   private tasksSubject = new BehaviorSubject<Task[]>([]);
   public tasks$ = this.tasksSubject.asObservable();
@@ -14,7 +15,15 @@ export class TaskService {
 
   addTask(task: Task): void {
     const currentTasks = this.tasksSubject.getValue();
-    const newId = currentTasks.length > 0 ? Math.max(...currentTasks.map(t => t.id || 0)) + 1 : 1;
+    let maxId = 0;
+
+    for (const task of currentTasks) {
+      const taskId = task.id || 0;
+      if (taskId > maxId) {
+        maxId = taskId;
+      }
+    }
+    const newId = maxId + 1;
     const newTask: Task = { ...task, id: newId };
     this.tasksSubject.next([...currentTasks, newTask]);
     console.log('Task added:', newTask);
