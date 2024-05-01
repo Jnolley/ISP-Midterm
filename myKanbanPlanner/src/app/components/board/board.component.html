@@ -2,19 +2,31 @@
   <ion-row>
     <ion-col>
       <div class="header">Backlog</div>
-      <app-task-card *ngFor="let task of tasksBacklog" [task]="task"></app-task-card>
+      <app-task-card
+        *ngFor="let task of tasksBacklog"
+        [task]="task"
+      ></app-task-card>
     </ion-col>
     <ion-col>
       <div class="header">To Do</div>
-      <app-task-card *ngFor="let task of tasksTodo" [task]="task"></app-task-card>
+      <app-task-card
+        *ngFor="let task of tasksTodo"
+        [task]="task"
+      ></app-task-card>
     </ion-col>
     <ion-col>
       <div class="header">In Progress</div>
-      <app-task-card *ngFor="let task of tasksInProgress" [task]="task"></app-task-card>
+      <app-task-card
+        *ngFor="let task of tasksInProgress"
+        [task]="task"
+      ></app-task-card>
     </ion-col>
     <ion-col>
       <div class="header">Done</div>
-      <app-task-card *ngFor="let task of tasksDone" [task]="task"></app-task-card>
+      <app-task-card
+        *ngFor="let task of tasksDone"
+        [task]="task"
+      ></app-task-card>
     </ion-col>
   </ion-row>
 </ion-grid>

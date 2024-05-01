@@ -14,11 +14,19 @@ export class AddTaskModalPage {
     description: '',
     priority: 'low',
     status: 'todo',
+    tags: [],
   };
 
-  constructor(private modalCtrl: ModalController, private taskService: TaskService) {}
+  availableTags: string[] = ['Homework', 'Chores', 'Other'];
+  selectedTags: string[] = [];
+
+  constructor(
+    private modalCtrl: ModalController,
+    private taskService: TaskService
+  ) {}
 
   addTask() {
+    this.task.tags = this.selectedTags;
     this.taskService.addTask(this.task);
     this.dismissModal();
   }

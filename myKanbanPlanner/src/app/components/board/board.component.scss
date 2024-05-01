@@ -5,12 +5,13 @@ ion-col {
   text-align: center;
 }
 
-.content-row{
+.content-row {
   text-align: center;
 }
 
 .header {
   font-size: 20px;
+  color: red;
 }
 
 @media (max-width: 800px) {
@@ -27,6 +28,6 @@ ion-col {
 
 @media (max-width: 400px) {
   .header {
-    font-size: 9px; 
+    font-size: 9px;
   }
 }

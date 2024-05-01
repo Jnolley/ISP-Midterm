@@ -21,8 +21,8 @@ export class BoardComponent implements OnInit {
       this.tasksInProgress = [];
       this.tasksDone = [];
       this.tasksBacklog = [];
-  
-      tasks.forEach(task => {
+
+      tasks.forEach((task) => {
         switch (task.status) {
           case 'todo':
             this.tasksTodo.push(task);
@@ -38,27 +38,24 @@ export class BoardComponent implements OnInit {
             break;
         }
       });
-  
+
       this.sortTasksByPriority();
     });
   }
-  
+
   sortTasksByPriority() {
     const priorityOrder = ['high', 'medium', 'low'];
-    
-    const sortByPriority = (task1: Task, task2: Task) => {
 
+    const sortByPriority = (task1: Task, task2: Task) => {
       const priorityIndex1 = priorityOrder.indexOf(task1.priority);
       const priorityIndex2 = priorityOrder.indexOf(task2.priority);
-  
+
       return priorityIndex1 - priorityIndex2;
     };
-    
+
     this.tasksTodo.sort(sortByPriority);
     this.tasksInProgress.sort(sortByPriority);
     this.tasksDone.sort(sortByPriority);
     this.tasksBacklog.sort(sortByPriority);
   }
-  
-  
 }

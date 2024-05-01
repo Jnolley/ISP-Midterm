@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TaskService } from 'src/app/services/task.service';
 import { Task } from 'src/app/models/task.model';
 
@@ -7,15 +7,14 @@ import { Task } from 'src/app/models/task.model';
   templateUrl: './task-card.component.html',
   styleUrls: ['./task-card.component.scss'],
 })
-
-export class TaskCardComponent implements OnInit {
+export class TaskCardComponent {
   @Input() task!: Task;
+  selectedTags: string[] = [];
+  availableTags: string[] = ['Homework', 'Chores', 'Other'];
 
-  constructor(private taskService: TaskService) { }
+  constructor(private taskService: TaskService) {}
 
-  ngOnInit() {}
-
-  onStatusChange(newStatus: string) {
+  onStatusChange(newStatus: 'todo' | 'inProgress' | 'done' | 'backlog') {
     if (this.task && this.task.id != null) {
       this.taskService.updateTaskStatus(this.task.id, newStatus);
     }
