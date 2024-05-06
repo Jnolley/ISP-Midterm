@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Task } from '../models/task.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private tasksSubject = new BehaviorSubject<Task[]>([]);
+  public tasksSubject = new BehaviorSubject<Task[]>([]);
   public tasks$ = this.tasksSubject.asObservable();
+  public finishedTasks: Task[] = [];
 
   constructor() {
     this.loadTasks();
@@ -21,7 +23,7 @@ export class TaskService {
     }
   }
 
-  private saveTasksToLocalStorage(tasks: Task[]): void {
+  public saveTasksToLocalStorage(tasks: Task[]): void {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
@@ -33,8 +35,8 @@ export class TaskService {
   }
 
   filterTasksByTag(tag: string): Observable<Task[]> {
-    return of(
-      this.tasksSubject.getValue().filter((task) => task.tags?.includes(tag))
+    return this.tasks$.pipe(
+      map((tasks) => tasks.filter((task) => task.tags?.includes(tag)))
     );
   }
 
@@ -53,8 +55,32 @@ export class TaskService {
     const index = tasks.findIndex((task) => task.id === taskId);
     if (index !== -1) {
       tasks[index].status = newStatus;
+      if (newStatus === 'done') {
+        this.moveTaskToFinished(tasks[index]);
+      }
       this.tasksSubject.next(tasks);
       this.saveTasksToLocalStorage(tasks);
+    }
+  }
+
+  private moveTaskToFinished(task: Task): void {
+    this.finishedTasks.push(task);
+  }
+
+  clearDoneColumn(): void {
+    const tasks = this.tasksSubject.getValue();
+    const updatedTasks = tasks.filter((task) => task.status !== 'done');
+    this.tasksSubject.next(updatedTasks);
+    this.saveTasksToLocalStorage(updatedTasks);
+  }
+
+  updateTask(updatedTask: Task): void {
+    const tasks = this.tasksSubject.getValue();
+    const index = tasks.findIndex((t) => t.id === updatedTask.id);
+    if (index !== -1) {
+      tasks[index] = updatedTask;
+      this.saveTasksToLocalStorage(tasks);
+      this.tasksSubject.next(tasks);
     }
   }
 }

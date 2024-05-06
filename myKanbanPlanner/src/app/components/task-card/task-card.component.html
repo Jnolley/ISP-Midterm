@@ -1,30 +1,17 @@
-<ion-card>
+<ion-card *ngIf="task">
   <ion-card-header>
     <ion-card-title>{{ task.title }}</ion-card-title>
+    <ion-button size="small" (click)="openEditModal()">Edit</ion-button>
   </ion-card-header>
   <ion-card-content>
     <p>{{ task.description }}</p>
     <ion-item>
       <ion-label>Select Tags</ion-label>
-      <ion-select multiple="true" [(ngModel)]="selectedTags">
-        <ion-select-option *ngFor="let tag of availableTags" [value]="tag">{{
-          tag
-        }}</ion-select-option>
-      </ion-select>
+      <div>{{ task.tags.join(", ") }}</div>
     </ion-item>
     <ion-item>
       <ion-label class="smaller-text">Status</ion-label>
-      <ion-select
-        [(ngModel)]="task.status"
-        (ionChange)="onStatusChange(task.status)"
-        class="small"
-        name="status"
-      >
-        <ion-select-option value="backlog">Backlog</ion-select-option>
-        <ion-select-option value="todo">To Do</ion-select-option>
-        <ion-select-option value="inProgress">In Progress</ion-select-option>
-        <ion-select-option value="done">Done</ion-select-option>
-      </ion-select>
+      <div>{{ task.status }}</div>
     </ion-item>
   </ion-card-content>
 </ion-card>

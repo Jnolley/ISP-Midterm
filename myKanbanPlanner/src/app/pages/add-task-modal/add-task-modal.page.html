@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Add Task</ion-title>
+    <ion-title>{{ task.id ? 'Edit Task' : 'Add Task' }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismissModal()">Close</ion-button>
     </ion-buttons>
@@ -9,55 +9,48 @@
 
 <ion-content>
   <form #taskForm="ngForm">
-    <ion-list>
-      <ion-item>
-        <ion-label position="floating">Title</ion-label>
-        <ion-input [(ngModel)]="task.title" name="title" required></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Description</ion-label>
-        <ion-textarea
-          [(ngModel)]="task.description"
-          name="description"
-        ></ion-textarea>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Priority</ion-label>
-        <ion-select [(ngModel)]="task.priority" name="priority">
-          <ion-select-option value="low">Low</ion-select-option>
-          <ion-select-option value="medium">Medium</ion-select-option>
-          <ion-select-option value="high">High</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Status</ion-label>
-        <ion-select [(ngModel)]="task.status" name="status">
-          <ion-select-option value="todo">To Do</ion-select-option>
-          <ion-select-option value="inProgress">In Progress</ion-select-option>
-          <ion-select-option value="done">Done</ion-select-option>
-          <ion-select-option value="backlog">Backlog</ion-select-option>
-        </ion-select>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Tags</ion-label>
-        <ion-select multiple [(ngModel)]="selectedTags" name="tags">
-          <ion-select-option *ngFor="let tag of availableTags" [value]="tag"
-            >{{ tag }}</ion-select-option
-          >
-        </ion-select>
-      </ion-item>
-    </ion-list>
-
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input [(ngModel)]="task.title" name="title" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea
+        [(ngModel)]="task.description"
+        name="description"
+      ></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label>Priority</ion-label>
+      <ion-select [(ngModel)]="task.priority" name="priority">
+        <ion-select-option value="low">Low</ion-select-option>
+        <ion-select-option value="medium">Medium</ion-select-option>
+        <ion-select-option value="high">High</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Status</ion-label>
+      <ion-select [(ngModel)]="task.status" name="status">
+        <ion-select-option value="todo">To Do</ion-select-option>
+        <ion-select-option value="inProgress">In Progress</ion-select-option>
+        <ion-select-option value="done">Done</ion-select-option>
+        <ion-select-option value="backlog">Backlog</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tags</ion-label>
+      <ion-select multiple [(ngModel)]="selectedTags" name="tags">
+        <ion-select-option *ngFor="let tag of availableTags" [value]="tag"
+          >{{ tag }}</ion-select-option
+        >
+      </ion-select>
+    </ion-item>
     <ion-button
       type="submit"
       expand="block"
-      (click)="addTask()"
+      (click)="saveTask()"
       [disabled]="!taskForm.form.valid"
-      >Add Task</ion-button
+      >Save Task</ion-button
     >
   </form>
 </ion-content>

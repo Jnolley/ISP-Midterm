@@ -24,9 +24,9 @@ export class BoardComponent implements OnInit {
   }
 
   loadAllTasks() {
-    this.taskService.tasks$.subscribe((tasks) =>
-      this.categorizeAndSortTasks(tasks)
-    );
+    this.taskService.tasks$.subscribe((tasks) => {
+      this.categorizeAndSortTasks(tasks);
+    });
   }
 
   async openTagFilter() {
@@ -58,33 +58,16 @@ export class BoardComponent implements OnInit {
   }
 
   filterTasksByTag(tag: string) {
-    this.taskService
-      .filterTasksByTag(tag)
-      .subscribe((tasks) => this.categorizeAndSortTasks(tasks));
+    this.taskService.filterTasksByTag(tag).subscribe((tasks) => {
+      this.categorizeAndSortTasks(tasks);
+    });
   }
 
   categorizeAndSortTasks(tasks: Task[]) {
-    this.tasksTodo = [];
-    this.tasksInProgress = [];
-    this.tasksDone = [];
-    this.tasksBacklog = [];
-
-    tasks.forEach((task) => {
-      switch (task.status) {
-        case 'todo':
-          this.tasksTodo.push(task);
-          break;
-        case 'inProgress':
-          this.tasksInProgress.push(task);
-          break;
-        case 'done':
-          this.tasksDone.push(task);
-          break;
-        case 'backlog':
-          this.tasksBacklog.push(task);
-          break;
-      }
-    });
+    this.tasksTodo = tasks.filter((task) => task.status === 'todo');
+    this.tasksInProgress = tasks.filter((task) => task.status === 'inProgress');
+    this.tasksDone = tasks.filter((task) => task.status === 'done');
+    this.tasksBacklog = tasks.filter((task) => task.status === 'backlog');
 
     this.sortTasksByPriority();
   }
@@ -99,5 +82,9 @@ export class BoardComponent implements OnInit {
     this.tasksInProgress.sort(sortByPriority);
     this.tasksDone.sort(sortByPriority);
     this.tasksBacklog.sort(sortByPriority);
+  }
+
+  clearDoneTasks() {
+    this.taskService.clearDoneColumn();
   }
 }
