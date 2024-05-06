@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Task } from '../models/task.model';
 import { map } from 'rxjs/operators';
+import { AlertController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root',
@@ -9,10 +10,12 @@ import { map } from 'rxjs/operators';
 export class TaskService {
   public tasksSubject = new BehaviorSubject<Task[]>([]);
   public tasks$ = this.tasksSubject.asObservable();
-  public finishedTasks: Task[] = [];
+  public historySubject = new BehaviorSubject<Task[]>([]);
+  public history$ = this.historySubject.asObservable();
 
-  constructor() {
+  constructor(private alertController: AlertController) {
     this.loadTasks();
+    this.loadHistory();
   }
 
   private loadTasks() {
@@ -23,8 +26,20 @@ export class TaskService {
     }
   }
 
+  private loadHistory() {
+    const storedHistory = localStorage.getItem('history');
+    if (storedHistory) {
+      const history: Task[] = JSON.parse(storedHistory);
+      this.historySubject.next(history);
+    }
+  }
+
   public saveTasksToLocalStorage(tasks: Task[]): void {
     localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+  private saveHistoryToLocalStorage(history: Task[]): void {
+    localStorage.setItem('history', JSON.stringify(history));
   }
 
   addTask(task: Task): void {
@@ -56,20 +71,29 @@ export class TaskService {
     if (index !== -1) {
       tasks[index].status = newStatus;
       if (newStatus === 'done') {
-        this.moveTaskToFinished(tasks[index]);
+        this.moveTaskToHistory(tasks[index]);
       }
       this.tasksSubject.next(tasks);
       this.saveTasksToLocalStorage(tasks);
     }
   }
 
-  private moveTaskToFinished(task: Task): void {
-    this.finishedTasks.push(task);
+  private moveTaskToHistory(task: Task): void {
+    const history = this.historySubject.getValue();
+    history.push(task);
+    this.historySubject.next(history);
+    this.saveHistoryToLocalStorage(history);
   }
 
   clearDoneColumn(): void {
     const tasks = this.tasksSubject.getValue();
-    const updatedTasks = tasks.filter((task) => task.status !== 'done');
+    const updatedTasks = tasks.filter((task) => {
+      if (task.status === 'done') {
+        this.moveTaskToHistory(task);
+        return false;
+      }
+      return true;
+    });
     this.tasksSubject.next(updatedTasks);
     this.saveTasksToLocalStorage(updatedTasks);
   }
@@ -82,5 +106,16 @@ export class TaskService {
       this.saveTasksToLocalStorage(tasks);
       this.tasksSubject.next(tasks);
     }
+  }
+
+  async showHistory() {
+    const history = this.historySubject.getValue();
+    console.log(history);
+    const alert = await this.alertController.create({
+      header: 'Task History',
+      message: history.map((task) => `${task.title}`).join(''),
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 }

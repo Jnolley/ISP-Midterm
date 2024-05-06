@@ -20,4 +20,8 @@ export class HomePage {
     });
     await modal.present();
   }
+
+  showDeletedTasks() {
+    this.taskService.showHistory();
+  }
 }
