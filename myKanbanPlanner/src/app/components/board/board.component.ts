@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { TaskService } from 'src/app/services/task.service';
 import { Task } from 'src/app/models/task.model';
 
@@ -13,45 +14,86 @@ export class BoardComponent implements OnInit {
   tasksDone: Task[] = [];
   tasksBacklog: Task[] = [];
 
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskService: TaskService,
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
-    this.taskService.tasks$.subscribe((tasks) => {
-      this.tasksTodo = [];
-      this.tasksInProgress = [];
-      this.tasksDone = [];
-      this.tasksBacklog = [];
+    this.loadAllTasks();
+  }
 
-      tasks.forEach((task) => {
-        switch (task.status) {
-          case 'todo':
-            this.tasksTodo.push(task);
-            break;
-          case 'inProgress':
-            this.tasksInProgress.push(task);
-            break;
-          case 'done':
-            this.tasksDone.push(task);
-            break;
-          case 'backlog':
-            this.tasksBacklog.push(task);
-            break;
-        }
-      });
+  loadAllTasks() {
+    this.taskService.tasks$.subscribe((tasks) =>
+      this.categorizeAndSortTasks(tasks)
+    );
+  }
 
-      this.sortTasksByPriority();
+  async openTagFilter() {
+    const alert = await this.alertController.create({
+      header: 'Select a Tag',
+      inputs: [
+        {
+          name: 'tag',
+          type: 'text',
+          placeholder: 'Enter tag to filter',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Ok',
+          handler: (data) => {
+            this.filterTasksByTag(data.tag);
+          },
+        },
+      ],
     });
+
+    await alert.present();
+  }
+
+  filterTasksByTag(tag: string) {
+    this.taskService
+      .filterTasksByTag(tag)
+      .subscribe((tasks) => this.categorizeAndSortTasks(tasks));
+  }
+
+  categorizeAndSortTasks(tasks: Task[]) {
+    this.tasksTodo = [];
+    this.tasksInProgress = [];
+    this.tasksDone = [];
+    this.tasksBacklog = [];
+
+    tasks.forEach((task) => {
+      switch (task.status) {
+        case 'todo':
+          this.tasksTodo.push(task);
+          break;
+        case 'inProgress':
+          this.tasksInProgress.push(task);
+          break;
+        case 'done':
+          this.tasksDone.push(task);
+          break;
+        case 'backlog':
+          this.tasksBacklog.push(task);
+          break;
+      }
+    });
+
+    this.sortTasksByPriority();
   }
 
   sortTasksByPriority() {
     const priorityOrder = ['high', 'medium', 'low'];
-
-    const sortByPriority = (task1: Task, task2: Task) => {
-      const priorityIndex1 = priorityOrder.indexOf(task1.priority);
-      const priorityIndex2 = priorityOrder.indexOf(task2.priority);
-
-      return priorityIndex1 - priorityIndex2;
-    };
+    const sortByPriority = (task1: Task, task2: Task) =>
+      priorityOrder.indexOf(task1.priority) -
+      priorityOrder.indexOf(task2.priority);
 
     this.tasksTodo.sort(sortByPriority);
     this.tasksInProgress.sort(sortByPriority);
