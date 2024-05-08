@@ -1,4 +1,4 @@
-<ion-card *ngIf="task">
+<ion-card *ngIf="task" [ngClass]="getPriorityClass(task.priority)">
   <ion-card-header>
     <ion-card-title>{{ task.title }}</ion-card-title>
     <ion-button size="small" (click)="openEditModal()">Edit</ion-button>

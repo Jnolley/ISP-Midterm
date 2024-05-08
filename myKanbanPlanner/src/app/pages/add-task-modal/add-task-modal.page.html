@@ -45,6 +45,14 @@
         >
       </ion-select>
     </ion-item>
+    <ion-item>
+      <ion-label position="floating">Due Date</ion-label>
+      <ion-datetime
+        displayFormat="MM/DD/YYYY"
+        [(ngModel)]="task.dueDate"
+        name="dueDate"
+      ></ion-datetime>
+    </ion-item>
     <ion-button
       type="submit"
       expand="block"

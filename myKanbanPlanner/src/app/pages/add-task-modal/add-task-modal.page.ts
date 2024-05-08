@@ -16,6 +16,7 @@ export class AddTaskModalPage {
     priority: 'low',
     status: 'todo',
     tags: [],
+    dueDate: '',
   };
   selectedTags: string[] = [];
   availableTags: string[] = ['Homework', 'Chores', 'Other'];
@@ -43,7 +44,7 @@ export class AddTaskModalPage {
     }
     this.taskService.saveTasksToLocalStorage(
       this.taskService.tasksSubject.getValue()
-    ); // Save tasks to local storage
+    );
     this.dismissModal();
   }
 

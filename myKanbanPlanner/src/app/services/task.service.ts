@@ -49,17 +49,22 @@ export class TaskService {
     this.saveTasksToLocalStorage(tasks);
   }
 
+  updateTask(updatedTask: Task): void {
+    const tasks = this.tasksSubject.getValue();
+    const index = tasks.findIndex((t) => t.id === updatedTask.id);
+    if (index !== -1) {
+      tasks[index] = updatedTask;
+      this.tasksSubject.next(tasks);
+      this.saveTasksToLocalStorage(tasks);
+    } else {
+      console.error('Task not found, cannot update.');
+    }
+  }
+
   filterTasksByTag(tag: string): Observable<Task[]> {
     return this.tasks$.pipe(
       map((tasks) => tasks.filter((task) => task.tags?.includes(tag)))
     );
-  }
-
-  getAvailableTags(): Observable<string[]> {
-    const tasks = this.tasksSubject.getValue();
-    const tags = new Set<string>();
-    tasks.forEach((task) => task.tags?.forEach((tag) => tags.add(tag)));
-    return of(Array.from(tags));
   }
 
   updateTaskStatus(
@@ -67,53 +72,52 @@ export class TaskService {
     newStatus: 'todo' | 'inProgress' | 'done' | 'backlog'
   ): void {
     const tasks = this.tasksSubject.getValue();
-    const index = tasks.findIndex((task) => task.id === taskId);
-    if (index !== -1) {
-      tasks[index].status = newStatus;
+    const task = tasks.find((task) => task.id === taskId);
+    if (task) {
+      task.status = newStatus;
       if (newStatus === 'done') {
-        this.moveTaskToHistory(tasks[index]);
+        this.moveTaskToHistory(task);
       }
       this.tasksSubject.next(tasks);
       this.saveTasksToLocalStorage(tasks);
+    } else {
+      console.error('Task not found, cannot update status.');
     }
   }
 
   private moveTaskToHistory(task: Task): void {
     const history = this.historySubject.getValue();
-    history.push(task);
+    const taskCopy = { ...task };
+    history.push(taskCopy);
     this.historySubject.next(history);
     this.saveHistoryToLocalStorage(history);
   }
 
   clearDoneColumn(): void {
-    const tasks = this.tasksSubject.getValue();
-    const updatedTasks = tasks.filter((task) => {
-      if (task.status === 'done') {
-        this.moveTaskToHistory(task);
-        return false;
-      }
-      return true;
-    });
-    this.tasksSubject.next(updatedTasks);
-    this.saveTasksToLocalStorage(updatedTasks);
-  }
+    const allTasks = this.tasksSubject.getValue();
+    const remainingTasks = allTasks.filter((task) => task.status !== 'done');
+    const doneTasks = allTasks.filter((task) => task.status === 'done');
 
-  updateTask(updatedTask: Task): void {
-    const tasks = this.tasksSubject.getValue();
-    const index = tasks.findIndex((t) => t.id === updatedTask.id);
-    if (index !== -1) {
-      tasks[index] = updatedTask;
-      this.saveTasksToLocalStorage(tasks);
-      this.tasksSubject.next(tasks);
-    }
+    doneTasks.forEach((task) => this.moveTaskToHistory(task));
+
+    this.tasksSubject.next(remainingTasks);
+    this.saveTasksToLocalStorage(remainingTasks);
   }
 
   async showHistory() {
     const history = this.historySubject.getValue();
-    console.log(history);
+    console.log('History items:', history);
+
+    if (history.length === 0) {
+      console.log('No history to show.');
+      return;
+    }
+
     const alert = await this.alertController.create({
       header: 'Task History',
-      message: history.map((task) => `${task.title}`).join(''),
+      message: history
+        .map((task) => `${task.title} - ${task.status}`)
+        .join(', '),
       buttons: ['OK'],
     });
     await alert.present();
